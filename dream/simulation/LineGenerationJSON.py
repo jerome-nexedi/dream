@@ -124,7 +124,6 @@ def createObjectResourcesAndCoreObjects():
     G.OperatorManagedJobsList = []
     G.OperatorPoolsList = []
     G.BrokersList = []
-    G.Router = None
     G.OperatedMachineList = []
     G.BatchScrapMachineList=[]
     G.OrderDecompositionList=[]
@@ -589,7 +588,7 @@ def activateObjects():
 # ===========================================================================
 def main(argv=[], input_data=None):
     argv = argv or sys.argv[1:]
-
+    G.RouterList=[]
     #create an empty list to store all the objects in   
     G.ObjList=[]
 
@@ -618,9 +617,9 @@ def main(argv=[], input_data=None):
         G.env=simpy.Environment()                       # initialize the environment
         G.maxSimTime=float(G.JSONData['general'].get('maxSimTime', '100'))     # read the maxSimTime in each replication 
                                                                                # since it may be changed for infinite ones
-        if G.Router:
-            G.Router.isActivated=False
-            G.Router.isInitialized=False
+        if G.RouterList:
+            G.RouterList[0].isActivated=False
+            G.RouterList[0].isInitialized=False
         
         if G.seed:
             G.Rnd=Random('%s%s' % (G.seed, i))
