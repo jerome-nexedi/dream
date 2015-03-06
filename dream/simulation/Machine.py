@@ -1163,12 +1163,13 @@ class Machine(CoreObject):
         # this checks if the operator is working on the last element. 
         # If yes the time that he was set off-shift should be updated
         operator=self.currentOperator
-        operator.schedule[-1].append(self.env.now)
         if not self.currentOperator.onShift:
             operator.timeLastShiftEnded=self.env.now      
             operator.unAssign()     # set the flag operatorAssignedTo to None     
             operator.workingStation=None  
             self.outputTrace(operator.name, "released from "+ self.objName)
+            if len(operator.schedule[-1])==2:
+                operator.schedule[-1].append(self.env.now)
         # XXX in case of skilled operators which stay at the same station should that change
         elif not operator.operatorDedicatedTo==self:
             operator.unAssign()     # set the flag operatorAssignedTo to None
@@ -1182,6 +1183,8 @@ class Machine(CoreObject):
                     if self.id in G.RouterList[0].expectedFinishSignalsDict:
                         signal=G.RouterList[0].expectedFinishSignalsDict[self.id]
                         self.sendSignal(receiver=G.RouterList[0], signal=signal)
+            if len(operator.schedule[-1])==2:
+                operator.schedule[-1].append(self.env.now)        
         self.broker.invoke()
         self.toBeOperated = False
         

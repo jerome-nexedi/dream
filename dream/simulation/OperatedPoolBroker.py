@@ -158,7 +158,14 @@ class Broker(ObjectInterruption):
                     if self.victim.expectedSignals['brokerIsSet']:
                         self.sendSignal(receiver=self.victim, signal=self.victim.brokerIsSet)
                     # update the schedule of the operator
-                    self.victim.currentOperator.schedule.append([self.victim, self.env.now])
+                    updateSchedule=True
+                    if self.victim.currentOperator.operatorDedicatedTo==self.victim:
+                        schedule=self.victim.currentOperator.schedule
+                        if schedule:
+                            if schedule[-1][0]==self.victim:
+                                updateSchedule=False         
+                    if updateSchedule:  
+                        self.victim.currentOperator.schedule.append([self.victim, self.env.now])
                     
                     # wait till the processing is over
                     self.expectedSignals['isCalled']=1
@@ -170,7 +177,7 @@ class Broker(ObjectInterruption):
                     self.isCalled=self.env.event()
                 
                 # The operator is released (the router is not called in the case of skilled ops that work constantly on the same machine)
-                if not self.victim.checkForDedicatedOperators():
+                if not self.victim.currentOperator.operatorDedicatedTo==self.victim:
                     if not self.victim.isOperated():
                         # signal the other brokers waiting for the same operators that they are now free
                         # also signal the stations that were not requested to receive because the operator was occupied
@@ -187,7 +194,8 @@ class Broker(ObjectInterruption):
                         
                         self.victim.printTrace(self.victim.currentOperator.objName, finishWork=self.victim.id)
                         # update the schedule of the operator
-                        self.victim.currentOperator.schedule[-1].append(self.env.now)
+                        if len(self.victim.currentOperator.schedule[-1])==2:
+                            self.victim.currentOperator.schedule[-1].append(self.env.now)
                         # the victim current operator must be cleared after the operator is released
                         self.timeLastOperationEnded = self.env.now
                         self.victim.currentOperator.workingStation=None

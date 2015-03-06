@@ -270,6 +270,11 @@ class Operator(ObjectResource):
         self.Waiting.append(100*self.totalWaitingTime/MaxSimtime)
         self.Working.append(100*self.totalWorkingTime/MaxSimtime)
         self.OffShift.append(100*self.totalOffShiftTime/MaxSimtime)
+        
+        # in the last element of the schedule if there is no exit time set it to now
+        if self.schedule:
+            if len(self.schedule[-1])==2:
+                self.schedule[-1].append(self.env.now)
 
     # =======================================================================
     #                    outputs results to JSON File
@@ -289,7 +294,7 @@ class Operator(ObjectResource):
                 try:
                     stationId=record[0].id
                 except AttributeError:
-                    stationId=record[0]['id']                 
+                    stationId=record[0]['id']
                 if len(record)==3:
                     json['results']['schedule'].append({
                         'stationId':stationId,
@@ -299,6 +304,8 @@ class Operator(ObjectResource):
                     json['results']['schedule'].append({
                         'stationId':stationId,
                         'entranceTime':record[1]})
+                    if record==self.schedule[-1]:
+                        json['results']['schedule'][-1]['exitTime']=G.maxSimTime
         G.outputJSON['elementList'].append(json)
     
     #===========================================================================
