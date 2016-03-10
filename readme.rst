@@ -2,10 +2,7 @@
 DREAM overview
 ========================
 
-commit 3
-
-testing mirror
-
+commit from web
 
 Scope
 ============
@@ -74,7 +71,7 @@ Acknowledgements
 =================
 
 ManPy is product of a research project funded from the European Union Seventh Framework 
-Programme (FP7-2012-NMP-ICT-FoF) under grant agreement n° 314364. The project name is 
+Programme (FP7-2012-NMP-ICT-FoF) under grant agreement nÂ° 314364. The project name is 
 DREAM and stands for "Simulation based application Decision support in Real-time for 
 Efficient Agile Manufacturing". More information about the scope of DREAM can be found in 
 http://dream-simulation.eu/. 
